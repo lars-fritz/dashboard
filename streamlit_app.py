@@ -35,10 +35,12 @@ def main():
     ]
     
     total_supply = 100_000_000  # Fixed total initial supply
-    category_percentages = {cat: 10 for cat in categories}  # Initial equal distribution
+    initial_percentages = [14.56, 23.30, 12.50, 23.00, 6.11, 21.09, 10.00, 2.20, 3.33, 5.00]
+    normalized_percentages = [p / sum(initial_percentages) * 100 for p in initial_percentages]
+    category_percentages = {cat: normalized_percentages[i] for i, cat in enumerate(categories)}
     
     changed_category = st.sidebar.selectbox("Select category to adjust", categories)
-    new_value = st.sidebar.slider(f"{changed_category} (%)", min_value=0, max_value=100, value=category_percentages[changed_category])
+    new_value = st.sidebar.slider(f"{changed_category} (%)", min_value=0.0, max_value=100.0, value=category_percentages[changed_category])
     
     distribute_remaining(categories, category_percentages, changed_category, new_value)
     
