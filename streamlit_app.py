@@ -17,16 +17,22 @@ def main():
     
     categories = [
         "Liquidity Providers", "Incentives", "Ecosystem", "Treasury (Future Development)",
-        "Fund Raising", "Seed Round", "Bridge Round", "Private Round", "Public Round", "Future Raise", "Team & Advisors"
+        "Seed Round", "Bridge Round", "Private Round", "Public Round", "Future Raise", "Team & Advisors"
     ]
     
     initial_values = [
-        12_500_000, 23_000_000, 4_305_556, 14_000_000, 10_000_000,
+        12_500_000, 23_000_000, 4_305_556, 14_000_000,
         2_200_000, 1_666_667, 5_694_444, 3_333_333, 23_300_000, 23_300_000
+    ]
+    
+    tge_unlock = [
+        2_778_000, 6_191_250, 733_333, 0,
+        0, 0, 83_333, 5_694_444, 0, 0
     ]
     
     total_supply = sum(initial_values)  # Ensure total supply matches
     category_supply = {categories[i]: initial_values[i] for i in range(len(categories))}
+    initial_unlock = {categories[i]: tge_unlock[i] for i in range(len(categories))}
     
     st.sidebar.header("Emissions")
     emissions_total = st.sidebar.number_input("Emissions Total", min_value=0.0, value=200_000_000.0, step=1_000_000.0)
@@ -35,15 +41,23 @@ def main():
     # Create DataFrame
     data = pd.DataFrame({
         "Category": list(category_supply.keys()),
-        "Amount": list(category_supply.values())
+        "Total Allocation": list(category_supply.values()),
+        "Initial Unlock at TGE": list(initial_unlock.values())
     })
     
     # Display the DataFrame
     st.write("### Initial Supply Breakdown", data)
     
     # Display a Pie Chart
-    fig = px.pie(data, names='Category', values='Amount', title="Token Supply Distribution")
+    fig = px.pie(data, names='Category', values='Total Allocation', title="Token Supply Distribution")
     st.plotly_chart(fig)
+    
+    # Discussion about TGE
+    st.write("## Token Generation Event (TGE)")
+    st.write(
+        "At the Token Generation Event (TGE), a portion of the total supply is initially unlocked to provide liquidity, incentives, and early participation rewards. "
+        "The initial unlock values vary by category, ensuring a controlled release of tokens to the market."
+    )
     
     # Calculate and plot weekly emissions
     weeks, emissions_values = calculate_weekly_emissions(emissions_total, emissions_decay)
