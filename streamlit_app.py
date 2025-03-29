@@ -73,5 +73,15 @@ def main():
     st.write(f"Total Emissions: {emissions_total}")
     st.write(f"Decay Rate: {emissions_decay}% per week")
     
+    # Plot category evolution over time (Assuming they remain constant for now)
+    weeks = np.arange(1, 101)
+    fig_categories = go.Figure()
+    
+    for i, category in enumerate(categories):
+        fig_categories.add_trace(go.Scatter(x=weeks, y=[initial_values[i]]*len(weeks), mode='lines', name=category))
+    
+    fig_categories.update_layout(title="Category Allocation Over Time", xaxis_title="Week", yaxis_title="Tokens", legend_title="Categories")
+    st.plotly_chart(fig_categories)
+    
 if __name__ == "__main__":
     main()
