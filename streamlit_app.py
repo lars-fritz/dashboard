@@ -30,23 +30,25 @@ def main():
         0, 0, 83_333, 5_694_444, 0, 0
     ]
     
+    if len(categories) == len(initial_values) == len(tge_unlock):
+        data = pd.DataFrame({
+            "Category": categories,
+            "Total Allocation": initial_values,
+            "Initial Unlock at TGE": tge_unlock
+        })
+    else:
+        st.error("Error: Mismatch in category and value lists. Please check data consistency.")
+        return
+    
     total_supply = sum(initial_values)  # Ensure total supply matches
-    category_supply = {categories[i]: initial_values[i] for i in range(len(categories))}
-    initial_unlock = {categories[i]: tge_unlock[i] for i in range(len(categories))}
     
     st.sidebar.header("Emissions")
     emissions_total = st.sidebar.number_input("Emissions Total", min_value=0.0, value=200_000_000.0, step=1_000_000.0)
     emissions_decay = st.sidebar.slider("Emissions Decay (Weekly %)", min_value=1, max_value=5, value=3)
     
-    # Create DataFrame
-    data = pd.DataFrame({
-        "Category": list(category_supply.keys()),
-        "Total Allocation": list(category_supply.values()),
-        "Initial Unlock at TGE": list(initial_unlock.values())
-    })
-    
     # Display the DataFrame
-    st.write("### Initial Supply Breakdown", data)
+    st.write("### Initial Supply Breakdown")
+    st.dataframe(data)
     
     # Display a Pie Chart
     fig = px.pie(data, names='Category', values='Total Allocation', title="Token Supply Distribution")
