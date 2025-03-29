@@ -10,6 +10,20 @@ def calculate_weekly_emissions(emissions_total, decay_percent):
     emissions_values = [weekly_emissions * ((1 - decay_percent / 100) ** week) for week in weeks]
     return weeks, emissions_values
 
+def distribute_remaining(categories, percentages, changed_category, new_value):
+    total_remaining = 100 - new_value
+    other_categories = [cat for cat in categories if cat != changed_category]
+    current_total = sum(percentages[cat] for cat in other_categories)
+    
+    if current_total == 0:
+        for cat in other_categories:
+            percentages[cat] = total_remaining / len(other_categories)
+    else:
+        for cat in other_categories:
+            percentages[cat] = (percentages[cat] / current_total) * total_remaining
+    
+    percentages[changed_category] = new_value
+
 def main():
     st.title("Token Supply Distribution")
     
@@ -21,10 +35,12 @@ def main():
     ]
     
     total_supply = 100_000_000  # Fixed total initial supply
-    category_percentages = {}
+    category_percentages = {cat: 10 for cat in categories}  # Initial equal distribution
     
-    for category in categories:
-        category_percentages[category] = st.sidebar.slider(f"{category} (%)", min_value=0, max_value=100, value=10)
+    changed_category = st.sidebar.selectbox("Select category to adjust", categories)
+    new_value = st.sidebar.slider(f"{changed_category} (%)", min_value=0, max_value=100, value=category_percentages[changed_category])
+    
+    distribute_remaining(categories, category_percentages, changed_category, new_value)
     
     st.sidebar.header("Emissions")
     emissions_total = st.sidebar.number_input("Emissions Total", min_value=0.0, value=200_000_000.0, step=1_000_000.0)
