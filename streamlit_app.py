@@ -30,11 +30,16 @@ def main():
         0, 0, 83_333, 5_694_444, 0, 0
     ]
     
-    if len(categories) == len(initial_values) == len(tge_unlock):
+    quarterly_unlock = [
+        571_731, 988_489, 178_611, 0, 0, 0, 0, 0, 0, 0
+    ]
+    
+    if len(categories) == len(initial_values) == len(tge_unlock) == len(quarterly_unlock):
         data = pd.DataFrame({
             "Category": categories,
             "Total Allocation": initial_values,
-            "Initial Unlock at TGE": tge_unlock
+            "Initial Unlock at TGE": tge_unlock,
+            "Quarterly Unlock": quarterly_unlock
         })
     else:
         st.error("Error: Mismatch in category and value lists. Please check data consistency.")
@@ -60,6 +65,10 @@ def main():
         "At the Token Generation Event (TGE), a portion of the total supply is initially unlocked to provide liquidity, incentives, and early participation rewards. "
         "The initial unlock values vary by category, ensuring a controlled release of tokens to the market."
     )
+    
+    # Mention monthly decay
+    st.write("## Monthly Decay")
+    st.write("The monthly decay rate is set at 2%, ensuring a gradual reduction in token emissions over time.")
     
     # Calculate and plot weekly emissions
     weeks, emissions_values = calculate_weekly_emissions(emissions_total, emissions_decay)
