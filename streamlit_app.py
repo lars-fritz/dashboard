@@ -53,7 +53,7 @@ def main():
     
     # Display the DataFrame
     st.write("### Initial Supply Breakdown")
-    st.dataframe(data)
+    st.table(data)
     
     # Display a Pie Chart
     fig = px.pie(data, names='Category', values='Total Allocation', title="Token Supply Distribution")
